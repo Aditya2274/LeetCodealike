@@ -1,10 +1,14 @@
 import express from 'express'
+import {register,login} from "../controllers/userAuthen.js"
 const authRouter= express.Router()
 //Register
+console.log(3)
 authRouter.post("/register",register);
+console.log(4)
 //login
 authRouter.post("/login",login);
 //logout
-authRouter.post("/logout",logout);
+// authRouter.post("/logout",logout);
 //GetProfile
-authRouter.get("/GetProfile",GetProfile);
+// authRouter.get("/GetProfile",GetProfile);
+export default authRouter
