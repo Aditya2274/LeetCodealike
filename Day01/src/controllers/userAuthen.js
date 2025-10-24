@@ -11,9 +11,8 @@ const register=async(req,res)=>{
      validate(req.body)
     const{firstName,emailId,password}=req.body
     req.body.password=await bcrypt.hash(password,10);
-    req.body.role='user'
     const user=await User.create(req.body)
-    const token=jwt.sign({_id:user._id,emailId:user.emailId},process.env.JWT_TOKEN,{expiresIn: 60*60});
+    const token=jwt.sign({_id:user._id,emailId:user.emailId,role:user.role},process.env.JWT_TOKEN,{expiresIn: 60*60});
     // res.cookie('token',token,{expire : new Date(Date.now())})
     res.cookie('token',token,{maxAge: 60*60*1000})
     res.status(201).send("User Registered successfully")
@@ -38,7 +37,7 @@ const login=async(req,res)=>{
             throw new Error("Invalid Password")
          }
          if (!process.env.JWT_TOKEN) return res.status(500).send("Server misconfiguration: JWT_TOKEN not set")
-          const token=jwt.sign({_id:user._id,emailId:emailId},process.env.JWT_TOKEN,{expiresIn: 60*60});
+          const token=jwt.sign({_id:user._id,emailId:emailId,role:'user'},process.env.JWT_TOKEN,{expiresIn: 60*60});
           res.cookie('token',token,{maxAge: 60*60*1000})
           res.send("Logged in successfully")
     }
@@ -64,4 +63,25 @@ const logout=async(req,res)=>{
         res.status(503).send("Error: "+err)
     }
 }
-export {register,login,logout}
+const adminRegister=async(req,res)=>{
+    try{
+         console.log("JWT_TOKEN available in register:", !!process.env.JWT_TOKEN)
+    //validate
+    console.log(5)
+    validate(req.body)
+    const{firstName,emailId,password}=req.body
+    if(req.result.role!='admin')
+        throw new Error("Role is user can't be registered as an admin")
+    req.body.password=await bcrypt.hash(password,10);
+    const user=await User.create(req.body)
+    const token=jwt.sign({_id:user._id,emailId:user.emailId,role:user.role},process.env.JWT_TOKEN,{expiresIn: 60*60});
+    // res.cookie('token',token,{expire : new Date(Date.now())})
+    res.cookie('token',token,{maxAge: 60*60*1000})
+    res.status(201).send("User Registered successfully")
+    }
+    catch(err){
+        console.log("Error: "+err.message)
+        res.status(400).send("Error occured")
+    }
+}
+export {register,login,logout,adminRegister}
