@@ -13,11 +13,11 @@ class Solution {
             arr[fre].add(ele);
         }
         int c=0;int[] ans=new int[k];
-        for(int i=arr.length-1;i>=0 && c<k;i--){
+        for(int i=arr.length-1;i>=0;i--){
             if(arr[i]!=null){
                 for(int val: arr[i]){
                     ans[c++]=val;
-                    if(c==k) break;
+                    if(c==k) return ans;
                 }
             }
         }
