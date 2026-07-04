@@ -1,18 +1,20 @@
 class Solution {
     public boolean isIsomorphic(String s, String t) {
-        if(s.length()!=t.length()) return false;
+        if(s.length()!=t.length()){
+            return false;
+        }
         Map<Character,Character> map=new HashMap<>();
-        Set<Character> mappedval=new HashSet<>();
+        HashSet<Character> mappedvalue=new HashSet<>();
         for(int i=0;i<s.length();i++){
-            char chart=t.charAt(i);
             char chars=s.charAt(i);
+            char chart=t.charAt(i);
             if(map.containsKey(chars)){
                 if(map.get(chars)!=chart) return false;
             }
             else{
-                if(mappedval.contains(chart)) return false;
+                if(mappedvalue.contains(chart)) return false;
                 map.put(chars,chart);
-                mappedval.add(chart);
+                mappedvalue.add(chart);
             }
         }
         return true;
